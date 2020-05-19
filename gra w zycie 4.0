@@ -1,0 +1,125 @@
+
+#include <iostream>
+
+using namespace std;
+int tab[25][25];       //tablica kolejnej generacji
+int tablica[25][25];   //tablica poczatkowa
+int wynik = 0;         //suma sasiadow
+bool odp = true;       //funkcja odpowiadajaca za kontynuacje oraz zakonczenie
+bool zacznij = false;
+
+//============================================================
+int wstep()                              //początkowa wersja planszy
+{
+            cout<<endl<<" "<<"zasady gry:";
+            cout<<endl;
+            cout<<endl<<" "<<"1. jeden krok gry zmienia stan komorek:";
+            cout<<endl<<" "<<"a) martwa komorka majaca 3 sasiadow w kolejnej generacji ozywa";
+            cout<<endl<<" "<<"b) zywa komorka z 2 lub 3 sasiadami pozostaje zywa";
+            cout<<endl<<" "<<"c) zywa komorka z mniej niz 2 sasiadami umiera z samotnosci";
+            cout<<endl<<" "<<"d) zywa komorka z 4 lub wiecej sasiadami umiera z przeludnienia";
+            cout<<endl<<" "<<"2. komorki rozpoczecia mozna zmienic w funkcji plansza()";
+            cout<<endl;
+            cout<<endl<<" "<<"wpisz 1, aby kontynuowac";
+            cout<<endl;
+            cin>>zacznij;
+
+}
+//============================================================
+int plansza()
+{
+    cout<<endl;
+    for(int i=0; i<25; i++)
+    {
+        cout<<"  ";
+        for(int j=0; j<25; j++)
+        {
+
+            tablica[i][j]= 0;
+
+            tablica[10][10]= 1;
+            tablica[10][11]= 1;
+            tablica[10][12]= 1;            //pierwotne komorki
+            tablica[10][13]= 1;
+            tablica[10][14]= 1;
+
+            cout<<" " << tablica[i][j];
+
+        }
+        cout<<endl;
+    }
+
+}
+//============================================================
+int komorki()
+{
+    for(int i=0; i<25; i++)
+     {
+        for(int j=0; j<25; j++)
+        {
+       wynik=0;
+
+       if(tablica[i+1][j+1]== 1) wynik++;
+       if(tablica[i-1][j-1]== 1) wynik++;
+       if(tablica[i+1][j-1]== 1) wynik++;
+       if(tablica[i-1][j+1]== 1) wynik++;         //zliczanie sasiadujacych komorek
+       if(tablica[i][j+1]== 1)   wynik++;
+       if(tablica[i][j-1]== 1)   wynik++;
+       if(tablica[i+1][j]== 1)   wynik++;
+       if(tablica[i-1][j]== 1)   wynik++;
+
+
+       if(wynik == 3 && tablica[i][j]== 0)         //narodziny nowej komorki - gdy ma 3 "sasiadow"
+       {tab[i][j] = tablica[i][j]; tab[i][j]= 1;}
+
+       else if(wynik == 2 && tablica[i][j]== 1)    //komorka sie nie zmienia - gdy ma 2 "sasiadow"
+        {tab[i][j] = tablica[i][j]; tab[i][j]= 1;}
+
+       else if(wynik < 2 && tablica[i][j]== 1)     //komorka umiera z samotnosci - 1 lub 0 "sasiadow"
+         {tab[i][j] = tablica[i][j]; tab[i][j]= 0;}
+
+       else if(wynik > 3 && tablica[i][j]== 1)     //komorka umiera z przeludnienia - 4 i wiecej "sasiadow"
+        { tab[i][j] = tablica[i][j]; tab[i][j]= 0;}
+
+        }
+     }
+}
+//=============================================================
+int zmiana()      //wprowadzenie nowej generacji/planszy
+{
+    cout<<endl;
+
+    for(int i=0; i<25; i++)
+    { cout<<"  ";
+        for(int j=0; j<25; j++)
+        {
+        tablica[i][j] = tab[i][j];
+        cout<<" "<<tab[i][j];         //wypisuje nowa tablice - kolejna generacja
+        }
+        cout<<endl;
+    }
+}
+//=============================================================
+int dalej()           //funkcja kontynuacji i zakończenia
+{
+    cout<<endl<<"1 - graj dalej, 0 - zakoncz"<<endl;
+    cin>>odp;
+    return odp;
+    if(odp == false) exit(0);  //program konczy sie po wpisaniu 0
+}
+//==============================================================
+int main()
+{
+
+  do{wstep();}while(zacznij != true); //petla rozpoczecia, az do wpisania 1
+  system("cls");                      //czyszczenie konsoli
+  plansza();
+
+  do                                  //pętla jest wykonywana dopoki wpisujemy 1
+    {
+     dalej();
+     system("cls");
+     komorki();
+     zmiana();
+    } while(odp == true);            //warunek wykonywania petli
+}
